@@ -1,0 +1,119 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Convergence&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Convergence,sans-serif;
+}
+
+.transition {
+ transition: top 200ms ease-in ,left 200ms ease-in fontsize 200ms ease-in;
+}
+
+.forminput:focus ~ .transition {
+  top:-25%;
+  font-size:20px;
+  width: 100px;
+  left: 1.5rem;
+  border:none;
+  font-weight: bolder;
+  /* background-color: ; */
+}
+
+
+.removescrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Blurred balls as moving background */
+.blurred-ball {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px); /* Adjust for strong blur */
+  opacity: 0.6; /* Adjust opacity for visibility */
+  animation: moveBall 10s infinite alternate;
+}
+
+/* Colors and initial positioning of each ball */
+.ball1 {
+  width: 200px;
+  height: 200px;
+  background-color: rgba(99, 102, 241, 0.8); /* Indigo */
+  top: -50px;
+  left: -50px;
+}
+
+.ball2 {
+  width: 180px;
+  height: 180px;
+  background-color: rgba(168, 85, 247, 0.8); /* Purple */
+  top: 50px;
+  right: -50px;
+}
+
+.ball3 {
+  width: 220px;
+  height: 220px;
+  background-color: rgba(236, 72, 153, 0.8); /* Pink */
+  bottom: -50px;
+  left: 50px;
+}
+
+/* Animation for the floating effect */
+@keyframes moveBall {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(50px, -30px);
+  }
+  100% {
+    transform: translate(-30px, 50px);
+  }
+}
+
+.gradient {
+  /* position: absolute; */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899, #6366f1);
+  background-size: 200% 200%;
+  animation: cycleGradient 15s linear infinite;
+  z-index: 1;
+  opacity: 0.8; /* Adjust for visibility */
+}
+
+/* Keyframes for a smooth, cycling gradient animation */
+@keyframes cycleGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.scroll-container {
+  height: 100vh; /* Full viewport height */
+  overflow-y: auto; /* Enables vertical scrolling */
+}
+
+.reactflow-container {
+  height: 600px; /* Adjust height based on React Flow content */
+  overflow-y: hidden; /* Prevents internal React Flow scroll conflicts */
+}
+
+.first-section,
+.second-section {
+  padding: 20px;
+  min-height: 100vh; /* Ensures each section fills the viewport */
+}
