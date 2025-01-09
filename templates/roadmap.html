@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Career Roadmap for {{ career_goal }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .flowchart-container {
+            text-align: center;
+            margin: 20px;
+        }
+        .flowchart-step {
+            cursor: pointer;
+            margin: 10px;
+        }
+        .flowchart-step:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+        .details-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        .details-popup.active {
+            display: block;
+        }
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .popup-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Your Personalized Career Roadmap</h1>
+    </header>
+
+    <main>
+        <section class="flowchart-container">
+            <h2>Interactive Flowchart</h2>
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% elif not roadmap_nodes %}
+                <p>No roadmap data available. Please try again.</p>
+            {% else %}
+                <p>Here is your step-by-step guide to achieving your career goals:</p>
+                <div id="flowchart"></div>
+            {% endif %}
+        </section>
+
+        <!-- Popup for step details -->
+        <div class="popup-overlay" id="popup-overlay" aria-hidden="true"></div>
+        <div class="details-popup" id="details-popup" role="dialog" aria-hidden="true">
+            <h3 id="step-title"></h3>
+            <p id="step-details"></p>
+            <button onclick="closePopup()">Close</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2024 Career Path Generator Developed By Zaratti | All Rights Reserved</p>
+    </footer>
+
+    <!-- Flowchart.js Script -->
+    <script src="https://unpkg.com/flowchart.js@1.15.0"></script>
+
+    <!-- Pass Flask Data to JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const roadmapNodes = JSON.parse('{{ roadmap_nodes | tojson | safe }}') || [];
+                const flowchartElement = document.getElementById('flowchart');
+
+                if (!roadmapNodes || roadmapNodes.length === 0) {
+                    console.error('Roadmap data is empty or invalid.');
+                    flowchartElement.innerHTML = '<p>No roadmap data available. Please try again.</p>';
+                    return;
+                }
+
+                const diagram = `
+                    st=>start: Start
+                    ${roadmapNodes.map((node, index) => `${node.id || `step${index}`}=>operation: ${node.label || 'Step'}`).join('\n')}
+                    ${roadmapNodes.map((node, index) => {
+                        if (index === 0) return `st->${node.id || `step${index}`}`;
+                        return `${roadmapNodes[index - 1].id || `step${index - 1}`}->${node.id || `step${index}`}`;
+                    }).join('\n')}
+                `;
+
+                const chart = flowchart.parse(diagram);
+                chart.drawSVG('flowchart', {
+                    'x': 0,
+                    'y': 0,
+                    'line-width': 2,
+                    'maxWidth': 800,
+                    'line-length': 50,
+                    'text-margin': 10,
+                    'font-size': 14,
+                    'font-color': '#000',
+                    'line-color': '#007bff',
+                    'element-color': '#007bff',
+                    'fill': '#fff',
+                    'arrow-end': 'block',
+                });
+
+                roadmapNodes.forEach((node) => {
+                    const stepElement = document.querySelector(`[data-link="${node.id}"]`);
+                    if (stepElement) {
+                        stepElement.classList.add('flowchart-step');
+                        stepElement.addEventListener('click', () => showDetails(node.label, node.details));
+                    }
+                });
+            } catch (error) {
+                console.error('Error parsing roadmap data or rendering flowchart:', error);
+            }
+        });
+
+        function showDetails(title, details) {
+            const overlay = document.getElementById('popup-overlay');
+            const popup = document.getElementById('details-popup');
+            document.getElementById('step-title').textContent = title;
+            document.getElementById('step-details').textContent = details;
+
+            overlay.classList.add('active');
+            overlay.setAttribute('aria-hidden', 'false');
+            popup.classList.add('active');
+            popup.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePopup() {
+            const overlay = document.getElementById('popup-overlay');
+            const popup = document.getElementById('details-popup');
+            overlay.classList.remove('active');
+            overlay.setAttribute('aria-hidden', 'true');
+            popup.classList.remove('active');
+            popup.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+    </script>
+</body>
+</html>

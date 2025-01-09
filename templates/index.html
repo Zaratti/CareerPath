@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Path Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <h1>Upscale Your Career with AI</h1>
+        <p>Powered by AI - Welcome to the Career Path Generator</p>
+    </header>
+
+    <main>
+        <!-- Introduction Section -->
+        <section class="intro">
+            <h2>What career in Tech do you want to pursue?</h2>
+            <p>Tell us your desired career goal, and we’ll generate a personalized roadmap for you!</p>
+        </section>
+
+        <!-- Input Form Section -->
+        <section class="input-form">
+            <form id="career-form" method="POST" action="{{ url_for('career_path') }}" enctype="multipart/form-data">
+                <!-- Career Goal Input -->
+                <div class="input-group">
+                    <label for="career-goal">Career Goal</label>
+                    <input 
+                        type="text" 
+                        id="career-goal" 
+                        name="career" 
+                        placeholder="e.g., Data Scientist, DevOps Engineer" 
+                        required 
+                        aria-label="Enter your career goal"
+                    >
+                </div>
+
+                <!-- Resume Upload Input -->
+                <div class="input-group">
+                    <label for="resume-upload">Upload Your Resume (PDF/DOCX)</label>
+                    <input 
+                        type="file" 
+                        id="resume-upload" 
+                        name="resume" 
+                        accept=".pdf,.docx" 
+                        aria-label="Upload your resume file"
+                    >
+                    <small class="description">Supported formats: PDF or DOCX. (Optional)</small>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn">Generate Roadmap</button>
+            </form>
+
+            <!-- Error Message Container -->
+            {% if error %}
+            <div class="error">
+                <p>{{ error }}</p>
+            </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 Career Path Generator Developed By Zaratti | All Rights Reserved</p>
+    </footer>
+
+    <!-- Link to the JavaScript file -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

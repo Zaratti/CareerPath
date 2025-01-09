@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        function checkAnswers() {
+            const questions = document.querySelectorAll(".quiz-question");
+            let score = 0;
+
+            questions.forEach((q) => {
+                const selected = q.querySelector("input:checked");
+                if (selected && selected.value === q.dataset.answer) {
+                    score++;
+                }
+            });
+
+            alert(`You scored ${score}/${questions.length}`);
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Step Quiz</h1>
+    </header>
+    <main>
+        {% for question in questions %}
+        <div class="quiz-question" data-answer="{{ question.answer }}">
+            <p>{{ question.question }}</p>
+            {% for option in question.options %}
+            <label>
+                <input type="radio" name="q{{ loop.index }}" value="{{ option }}"> {{ option }}
+            </label><br>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        <button onclick="checkAnswers()">Submit</button>
+    </main>
+    <footer>
+        <p>© 2024 Career Path Generator</p>
+    </footer>
+</body>
+</html>
